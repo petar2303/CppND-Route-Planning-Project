@@ -27,6 +27,22 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
     return std::move(contents);
 }
 
+static void InsertCoordinates(float &coordinate, const int &boundMin, const int &boundMax)
+{
+    bool inBound = false;
+    do
+    {
+        std::cin >> coordinate;
+        inBound = coordinate >= boundMin && coordinate <= boundMax;
+        if(inBound == false)
+        {
+            std::cout << "Inserted value is out of bounds (" << boundMin << ", " << boundMax << "). Please insert again: ";
+        }
+
+    } while (inBound == false);
+    std::cout << "Successfully inserted coordinate with value: " << coordinate << "\n";
+}
+
 int main(int argc, const char **argv)
 {    
     std::string osm_data_file = "";
@@ -56,11 +72,30 @@ int main(int argc, const char **argv)
     // user input for these values using std::cin. Pass the user input to the
     // RoutePlanner object below in place of 10, 10, 90, 90.
 
+    float start_x = 0;
+    float start_y = 0;
+    float end_x = 0;
+    float end_y = 0;
+    const int boundMin = 0;
+    const int boundMax = 100; 
+    
+    std::cout << "Enter start x coordinates (0 to 100): ";
+    InsertCoordinates(start_x, boundMin, boundMax);
+
+    std::cout << "Enter start y coordinates (0 to 100): ";
+    InsertCoordinates(start_y, boundMin, boundMax);
+
+    std::cout << "Enter end x coordinates (0 to 100): ";
+    InsertCoordinates(end_x, boundMin, boundMax);
+
+    std::cout << "Enter end y coordinates (0 to 100): ";
+    InsertCoordinates(end_y, boundMin, boundMax);
+
     // Build Model.
     RouteModel model{osm_data};
 
     // Create RoutePlanner object and perform A* search.
-    RoutePlanner route_planner{model, 10, 10, 90, 90};
+    RoutePlanner route_planner{model, start_x, start_y, end_x, end_y};
     route_planner.AStarSearch();
 
     std::cout << "Distance: " << route_planner.GetDistance() << " meters. \n";

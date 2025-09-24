@@ -11,8 +11,10 @@ project(OSM_A_star_search)
 # Set library output path to /lib
 set(LIBRARY_OUTPUT_PATH "${CMAKE_SOURCE_DIR}/lib")
 
+# Added as a quick fix for the old version of googletest submodule
+add_compile_options(-Wno-error=maybe-uninitialized)
+
 # Locate project prerequisites
-find_package(io2d REQUIRED)
 find_package(Cairo)
 find_package(GraphicsMagick)
 
@@ -23,12 +25,13 @@ set(IO2D_WITHOUT_TESTS 1)
 # Add the pugixml and GoogleTest library subdirectories
 add_subdirectory(thirdparty/pugixml)
 add_subdirectory(thirdparty/googletest)
+add_subdirectory(thirdparty/io2d)
 
 # Add project executable
 add_executable(OSM_A_star_search src/main.cpp src/model.cpp src/render.cpp src/route_model.cpp src/route_planner.cpp)
 
 target_link_libraries(OSM_A_star_search
-    PRIVATE io2d::io2d
+    PRIVATE io2d
     PUBLIC pugixml
 )
 
